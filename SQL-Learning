@@ -1,0 +1,97 @@
+Select ---Câu lệnh lấy danh sách phẫu thuật Lasik có trong danh sách đăng ký khám
+b.MaBenhAn,
+d.MaBenhNhan,
+a.NgayRaVien,
+a.PPMO,
+a.CD_SAUPT,
+a.HOSOBENHAN,
+b.SOTHE_BHYT,
+d.HOTENBN,
+d.TUOI,
+d.TINH,
+h.TENCV,
+g.GiaTien,
+g.GiaBHYT,
+g.ThanhTien,
+g.PhuThuBHYT,
+(g.GiaBHYT-g.PhuThuBHYT)as PhaithuBHYT,
+g.Giam,
+g.GiamVND,
+c.CHUCNANG
+From HOSOPT_TAIMUIHONG a
+Inner Join BenhAn b on b.MaBenhAn=a.MaBenhAn
+Inner Join BenhNhan d on d.MaBenhNhan=b.MaBenhNhan
+Inner Join PhieuThu f on f.MaBenhAn=b.MaBenhAn
+Inner Join NHANVIEN c on c.MANV=f.ThuNgan
+Inner Join ChiTietPhieuThu g on g.MaPhieuThu=f.MaPhieuThu
+Inner Join DSCV_TH e on e.ID_DSCV=g.ID_DSCV
+Inner Join CONGVIEC h on h.MACV=e.MACV
+Right Join 
+			(Select distinct
+			g.MaBenhNhan
+			From PhieuThu a
+			Inner Join Nhanvien b on b.MANV=a.ThuNgan
+			Inner Join ChiTietPhieuThu c on c.MaPhieuThu=a.MaPhieuThu
+			Inner Join DSCV_TH d on d.ID_DSCV=c.ID_DSCV
+			Inner Join CONGVIEC e on e.MACV=d.MACV
+			Inner Join Benhan f on f.MaBenhAn=d.MaBenhAn
+			Inner Join BenhNhan g on g.MaBenhNhan=f.MaBenhNhan
+			Inner Join (Select Distinct
+						d.MaBenhAn
+						From PhieuThu a
+						Inner Join ChiTietPhieuThu c on c.MaPhieuThu=a.MaPhieuThu
+						Inner Join DSCV_TH d on d.ID_DSCV=c.ID_DSCV
+						Inner Join CONGVIEC e on e.MACV=d.MACV
+						Where e.Macv=N'DVKT-H002'
+								and a.NgayThu>='2019-12-05') h on h.MaBenhAn=f.MaBenhAn) l on l.MaBenhNhan=d.MaBenhNhan
+Where f.NgayThu>='2019-12-05' and (PPMO like N'%lasik%' or PPMO like N'%Smile%')
+Union
+Select ---Câu lệnh lấy danh sách phẫu thuật Lasik không có trong danh sách đăng ký khám
+b.MaBenhAn,
+d.MaBenhNhan,
+a.NgayRaVien,
+a.PPMO,
+a.CD_SAUPT,
+a.HOSOBENHAN,
+b.SOTHE_BHYT,
+d.HOTENBN,
+d.TUOI,
+d.TINH,
+h.TENCV,
+g.GiaTien,
+g.GiaBHYT,
+g.ThanhTien,
+g.PhuThuBHYT,
+(g.GiaBHYT-g.PhuThuBHYT)as PhaithuBHYT,
+g.Giam,
+g.GiamVND,
+c.CHUCNANG
+From HOSOPT_TAIMUIHONG a
+Inner Join BenhAn b on b.MaBenhAn=a.MaBenhAn
+Inner Join BenhNhan d on d.MaBenhNhan=b.MaBenhNhan
+Inner Join PhieuThu f on f.MaBenhAn=b.MaBenhAn
+Inner Join NHANVIEN c on c.MANV=f.ThuNgan
+Inner Join ChiTietPhieuThu g on g.MaPhieuThu=f.MaPhieuThu
+Inner Join DSCV_TH e on e.ID_DSCV=g.ID_DSCV
+Inner Join CONGVIEC h on h.MACV=e.MACV
+Where f.NgayThu>='2019-12-05' 
+	and (PPMO like N'%lasik%' or PPMO like N'%Smile%')
+	and d.MaBenhNhan not in 
+			(Select distinct
+			g.MaBenhNhan
+			From PhieuThu a
+			Inner Join Nhanvien b on b.MANV=a.ThuNgan
+			Inner Join ChiTietPhieuThu c on c.MaPhieuThu=a.MaPhieuThu
+			Inner Join DSCV_TH d on d.ID_DSCV=c.ID_DSCV
+			Inner Join CONGVIEC e on e.MACV=d.MACV
+			Inner Join Benhan f on f.MaBenhAn=d.MaBenhAn
+			Inner Join BenhNhan g on g.MaBenhNhan=f.MaBenhNhan
+			Inner Join (Select Distinct
+						d.MaBenhAn
+						From PhieuThu a
+						Inner Join ChiTietPhieuThu c on c.MaPhieuThu=a.MaPhieuThu
+						Inner Join DSCV_TH d on d.ID_DSCV=c.ID_DSCV
+						Inner Join CONGVIEC e on e.MACV=d.MACV
+						Where e.Macv=N'DVKT-H002'
+								and a.NgayThu>='2019-12-05') h on h.MaBenhAn=f.MaBenhAn)
+Order by a.NgayRaVien Desc;
