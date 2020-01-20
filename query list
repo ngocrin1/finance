@@ -1,0 +1,44 @@
+Select
+b.NgayThu,
+l.NgayRaVien,
+j.MaBenhAn,
+k.MaBenhNhan,
+k.HOTENBN,
+f.MACV,
+f.TENCV,
+l.PPMO,
+n.TenLoaiThe,
+a.ThanhTien as Sotien,
+a.GiamVND as Giamgiatien,
+(a.Giam*a.ThanhTien/100) as GiamTyle,
+(a.ThanhTien-a.GiamVND-(a.Giam*a.ThanhTien/100)) as Thucthu,
+c.CHUCNANG
+From ChiTietPhieuThu a
+Inner Join DSCV_TH e on e.ID_DSCV=a.ID_DSCV
+Inner join (Select
+			MACV,
+			MaBenhVien,
+			DichVuPhauThuat,
+			NhomCongViecBaoCao,
+			TENCV
+			From BangGia20200115
+			where MaBenhVien='R') f on f.MACV=e.MACV
+Inner Join (Select
+			NgayThu,
+			MaPhieuThu,
+			MaBenhAn,
+			thungan
+			From PhieuThu
+			where NgayThu>='2019-12-05') b on b.MaPhieuThu=a.MaPhieuThu
+Inner Join BenhAn j on j.MaBenhAn=b.MaBenhAn
+Inner Join BenhNhan k on k.MaBenhNhan=j.MaBenhNhan
+Inner Join NHANVIEN c on c.manv=b.ThuNgan
+Left Join (Select
+			PPMO,
+			NgayRaVien,
+			MaBenhAn
+			From HOSOPT_TAIMUIHONG) l on l.MaBenhAn=j.MaBenhAn
+left Join BenhAnLoaiThe m on m.MaBenhAn=j.MaBenhAn
+left Join LoaiThe n on n.MaLoaiThe=m.MaLoaiThe
+where (f.DichVuPhauThuat =N'Lasik' or f.DichVuPhauThuat =N'Lasik-Blade'or f.DichVuPhauThuat =N'Lasik-Femto'or f.DichVuPhauThuat =N'Lasik-Smile') and f.NhomCongViecBaoCao= N'Phẫu thuật'
+order by b.NgayThu asc
